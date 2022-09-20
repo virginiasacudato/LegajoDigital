@@ -2,6 +2,7 @@ import unittest
 from selenium import webdriver
 import urllib3
 import os
+from selenium.webdriver.common.by import By
 from os.path import join, dirname
 from dotenv import load_dotenv
 
@@ -18,8 +19,19 @@ class WebDriverSetup(unittest.TestCase):
     def setUp(self):
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         options = webdriver.ChromeOptions()
-        options.add_experimental_option("excludeSwitches", ["enable-loggind"])
+        options.add_experimental_option("excludeSwitches", ["enable-logging"])
         self.driver = webdriver.Chrome(options=options)
         self.driver.implicitly_wait(15)
         self.driver.maximize_window()
-        self.driver.get()
+        self.driver.get(BASE_URL)
+        # Login
+        self.driver.find_element(By.ID, 'Usuario').send_keys(USER)
+        self.driver.find_element(By.ID, 'Password').send_keys(PASSWORD)
+        self.driver.find_element(By.ID, 'btnIngresar').click()
+        # Acceso a Legajo Digital
+        self.driver.find_element(By.XPATH, '/html/body/main/aside/section/nav/ul/li[7]/div/label').click()
+
+    def tearDown(self):
+        if self.driver is not None:
+            self.driver.close()
+            self.driver.quit()
