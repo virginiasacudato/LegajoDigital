@@ -109,6 +109,7 @@ class CertificadoFirma:
             assert True
         else:
             print('Operación con errores')
+            assert False
 
     def baja_cert_raiz(self):
         self.get_cert_firma().click()
@@ -165,6 +166,13 @@ class CertificadoFirma:
             final_names_emp_table.append(emp_table)
 
         print('Empleados finales luego de la "eliminacion"', final_names_emp_table)
+
+        if init_names_emp_table != final_names_emp_table:
+            print("Hubo un elemento eliminado!!!")
+            assert True
+        else:
+            print("Algo fallo")
+            assert False
 
 
 
