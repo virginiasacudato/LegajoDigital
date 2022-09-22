@@ -4,17 +4,22 @@ from src.PageObject.Pages.Documentación import Documentacion
 
 class TestDocumentacion(WebDriverSetup):
 
-    def test_a_alt_doc(self):
-        driver = self.driver
-        doc = Documentacion(driver)
-        doc.upload_file()
+    #def test_a_alt_doc(self):
+    #    driver = self.driver
+    #    doc = Documentacion(driver)
+    #    doc.upload_file()
 
-    def test_b_baja_doc(self):
-        driver = self.driver
-        doc = Documentacion(driver)
-        doc.del_file()
+    #def test_b_baja_doc(self):
+    #    driver = self.driver
+    #    doc = Documentacion(driver)
+    #    doc.del_file()
 
-    def test_c_firmar_doc(self):
+    #def test_c_firmar_doc(self):
+    #    driver = self.driver
+    #    doc = Documentacion(driver)
+    #    doc.firmar_doc_subido()
+
+    def test_d_check_download_file(self):
         driver = self.driver
         doc = Documentacion(driver)
-        doc.firmar_doc_subido()
+        doc.check_download_file()

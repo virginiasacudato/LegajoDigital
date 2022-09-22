@@ -1,6 +1,6 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-import os
+import os, shutil
 import time
 import random
 from selenium.common.exceptions import NoSuchElementException
@@ -27,7 +27,8 @@ class Documentacion:
         # Firmar File
         self.firma_req = '//*[@id="modalSeleccionarEmpleados"]/div[2]/div/div[2]/div[3]/label'
         self.pass_cert_raiz = 'PasswordCertificado'
-
+        # Dowload File
+        self.btn_down_pdf = '//*[@id="ListadoArchivos_wrapper"]/div[1]/button[2]'
 
     # -- Get Elements --
     def get_documentacion(self):
@@ -62,6 +63,11 @@ class Documentacion:
 
     def get_pass_cert_raiz(self):
         return self.driver.find_element(By.ID, self.pass_cert_raiz)
+
+    # Download File
+
+    def get_btn_down_file(self):
+        return self.driver.find_element(By.XPATH, self.btn_down_pdf)
 
     # -- Actions --
 
@@ -159,7 +165,36 @@ class Documentacion:
         else:
             print('Test Fallido.')
             assert False
-    
+
+    def check_download_file(self):
+
+        self.get_documentacion().click()
+        self.get_btn_down_file().click()
+        time.sleep(6)
+
+        while not os.path.exists(r"C:\Users\Maynar\Desktop\Test-Files"):
+            time.sleep(2)
+
+        # Check file
+        if os.path.isfile(r"C:\Users\Maynar\Desktop\Test-Files\Documentación.pdf"):
+            print("File download is completed")
+            assert True
+        else:
+            print("File download is not completed")
+            assert False
+
+        time.sleep(3)
+        # Delete content folder
+        folder = r"C:\Users\Maynar\Desktop\Test-Files"
+        for filename in os.listdir(folder):
+            file_path = os.path.join(folder, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 
 

@@ -17,9 +17,11 @@ BASE_URL = os.getenv('URL')
 
 class WebDriverSetup(unittest.TestCase):
     def setUp(self):
+        p = {'download.default_directory': r"C:\Users\Maynar\Desktop\Test-Files"}
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         options = webdriver.ChromeOptions()
         options.add_experimental_option("excludeSwitches", ["enable-logging"])
+        options.add_experimental_option('prefs', p)
         self.driver = webdriver.Chrome(options=options)
         self.driver.implicitly_wait(15)
         self.driver.maximize_window()
