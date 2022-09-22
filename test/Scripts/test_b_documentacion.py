@@ -8,3 +8,8 @@ class TestDocumentacion(WebDriverSetup):
         driver = self.driver
         doc = Documentacion(driver)
         doc.upload_file()
+
+    def test_b_baja_doc(self):
+        driver = self.driver
+        doc = Documentacion(driver)
+        doc.del_file()
