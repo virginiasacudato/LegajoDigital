@@ -2,7 +2,7 @@ from src.TestBase.WebDriverSetup import WebDriverSetup
 from src.PageObject.Pages.Documentación import Documentacion
 
 
-class TestDocumentacion(WebDriverSetup):
+#class TestDocumentacion(WebDriverSetup):
 
     #def test_a_alt_doc(self):
     #    driver = self.driver
@@ -19,7 +19,7 @@ class TestDocumentacion(WebDriverSetup):
     #    doc = Documentacion(driver)
     #    doc.firmar_doc_subido()
 
-    def test_d_check_download_file(self):
-        driver = self.driver
-        doc = Documentacion(driver)
-        doc.check_download_file()
+    #def test_d_check_download_file(self):
+    #    driver = self.driver
+    #    doc = Documentacion(driver)
+    #    doc.check_download_file()
