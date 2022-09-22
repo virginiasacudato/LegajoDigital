@@ -24,6 +24,9 @@ class Documentacion:
         self.trash = '//*[@id="ListadoArchivos"]/tbody/tr[1]/td[8]/a/i'
         self.btn_confirm = '//*[@id="modal-danger-delete-selected-recibos"]/div[2]/div/div[3]/button[2]'
         self.doc_table = 'sorting_1'
+        # Firmar File
+        self.firma_req = '//*[@id="modalSeleccionarEmpleados"]/div[2]/div/div[2]/div[3]/label'
+        self.pass_cert_raiz = 'PasswordCertificado'
 
 
     # -- Get Elements --
@@ -51,6 +54,14 @@ class Documentacion:
 
     def get_docs_table(self):
         return self.driver.find_elements(By.CLASS_NAME, self.doc_table)
+
+    # Firmar file
+
+    def get_firma_req(self):
+        return self.driver.find_element(By.XPATH, self.firma_req)
+
+    def get_pass_cert_raiz(self):
+        return self.driver.find_element(By.ID, self.pass_cert_raiz)
 
     # -- Actions --
 
@@ -115,7 +126,43 @@ class Documentacion:
             print("Algo fallo")
             assert False
 
+    def firmar_doc_subido(self):
+        def check_exito():
+            try:
+                msg = self.get_msg_exitoso().text
+                if msg == 'Operación Exitosa':
+                    print('Coincide --> Operacion Exitosa')
+            except NoSuchElementException:
+                return False
+            return True
+
+        self.get_documentacion().click()
+
+        self.get_inpt_files().send_keys(os.getcwd() + "/Example.pdf")
+        time.sleep(3)
+        print(self.get_check_emp())
+        random_opt_sec = random.choice(self.get_check_emp())
+        print(random_opt_sec)
+        time.sleep(5)
+        random_opt_sec.click()
+        time.sleep(3)
+        self.get_firma_req().click()
+        time.sleep(2)
+        self.get_pass_cert_raiz().send_keys('admin')
+        self.get_save_btn().click()
+        time.sleep(4)
+
+        check_exito()
+
+        if check_exito() is True:
+            assert True
+        else:
+            print('Test Fallido.')
+            assert False
     
+
+
+
 
 
 

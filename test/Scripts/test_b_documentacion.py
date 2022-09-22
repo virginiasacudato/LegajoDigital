@@ -13,3 +13,8 @@ class TestDocumentacion(WebDriverSetup):
         driver = self.driver
         doc = Documentacion(driver)
         doc.del_file()
+
+    def test_c_firmar_doc(self):
+        driver = self.driver
+        doc = Documentacion(driver)
+        doc.firmar_doc_subido()
