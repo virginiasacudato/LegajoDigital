@@ -144,7 +144,7 @@ class Documentacion:
 
         self.get_documentacion().click()
 
-        self.get_inpt_files().send_keys(os.getcwd() + "/Example.pdf")
+        self.get_inpt_files().send_keys(os.getcwd() + "/docExample/Example.pdf")
         time.sleep(3)
         print(self.get_check_emp())
         random_opt_sec = random.choice(self.get_check_emp())

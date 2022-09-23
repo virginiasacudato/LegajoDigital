@@ -16,13 +16,24 @@
 ## Acerca del proyecto
 
 Con este proyecto se busca automatizar pruebas para el módulo Legajo Digital.
-
 A continuación un detalle de los casos de prueba que realiza:
 
-**1. Test Suite - Certificado Firma:**
+*Prerequisito: Tener creado una cantidad de empleados con los permisos necesarios*
+
+**1. Test Suite - Certificado Firma**
 - Caso 1 (Happy Path): Crear un certificado raiz. Verificación de leyenda exitosa. Verifica la existencia de elemento traído.
-- Caso 2: Crear certificado raiz sin el campo contraseña. Verificación de leyenda de error.
-- Caso 3: Eliminar certificado raiz.
+- Caso 2: Eliminación certificado.
+
+**2. Test Suite - Documentación**
+- Caso 1 (Happy Path): Subir documento. Chequeo de operación exitosa.
+- Caso 2: Eliminación de documento. Chequeo de la desaparición del elemento.
+- Caso 3: Firma de documentación subida. 
+- Caso 4: Descarga de documento PDF. Chequeo de existencia de archivo en carpeta del sistema operativo.
+
+**3. Test Suite - Recibos de Sueldo**
+- Caso 1 (Happy Path): Subida de documento. Chequeo del elemento en tabla.
+- Caso 2: Eliminación del documento.
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
