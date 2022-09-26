@@ -3,7 +3,6 @@ from selenium.common.exceptions import NoSuchElementException
 import os
 import time
 import random
-import re
 
 for file in os.listdir('C:/Users/Maynar/Desktop/LegajoDigital'):
     if file.endswith(".pdf"):
@@ -78,6 +77,8 @@ class RecibosDeSueldo:
     # -- Actions --
 
     def upload_files(self):
+        def return_result():
+            return new_name_file
         def check_upload_files(array):
             table_files = self.get_files_table()
             for table_file in table_files:
@@ -108,6 +109,7 @@ class RecibosDeSueldo:
         else:
             assert False
 
+
     def sign_file(self):
 
         self.get_recibosdesueldo().click()
@@ -124,13 +126,11 @@ class RecibosDeSueldo:
             self.get_btn_firmar().click()
             time.sleep(5)
         else:
-            print("ESTOY EN EL ELSE!!!!!!!!")
+            print("ESTOY EN EL ELSE!")
             # En caso de que la firma no sea pendiente podria pasar al elemento de abajo y si este no lo tiene hacer lo mismo
             # Pero esto depende de que haya mas de un elemento en la tabla
             # Segun como esta creado los casos de prueba en este orden funciona y no deberia haber problemas para firmar un archivo
-
-
-
+        time.sleep(5)
 
     def delete_files(self):
         self.get_recibosdesueldo().click()
