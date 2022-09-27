@@ -3,6 +3,15 @@ from selenium.common.exceptions import NoSuchElementException
 import os
 import time
 import random
+from os.path import join, dirname
+from dotenv import load_dotenv
+
+dotenv_path = join(dirname(__file__), 'C:/Users/Maynar/Desktop/LegajoDigital/.env')
+load_dotenv(dotenv_path)
+
+# Environment Variables
+USER_EMPLOY = os.getenv('USER_EMPLOY')
+PASSWORD_EMPLOY = os.getenv('PASSWORD_EMPLOY')
 
 for file in os.listdir('C:/Users/Maynar/Desktop/LegajoDigital'):
     if file.endswith(".pdf"):
@@ -33,6 +42,17 @@ class RecibosDeSueldo:
         self.pass_cert = '//*[@id="passwordCertificado"]'
         self.btn_firmar = '//*[@id="modalPassCertificadoRaiz"]/div[2]/div/div[3]/button[2]'
         self.status_table = '//*[@id="ListadoArchivos"]/tbody/tr/td[3]'
+
+        # -- EMPLEADO --
+        # LogOut
+        self.exit = '/html/body/main/header/div[2]/i'
+        self.confirm = '//*[@id="1"]'
+        # Login
+        self.user = 'Usuario'
+        self.password = 'Password'
+        self.btn_ingresar = 'btnIngresar'
+        # Section
+        self.section = '/html/body/main/aside/section/nav/ul/li[3]/div/div/ul/li[2]/a'
 
     # -- Get Elements --
 
@@ -74,11 +94,36 @@ class RecibosDeSueldo:
     def get_status_tables(self):
         return self.driver.find_elements(By.XPATH, self.status_table)
 
+
+    # -- EMPLEADO --
+    # Exit
+    def get_btn_exit(self):
+        return self.driver.find_element(By.XPATH, self.exit)
+
+    def get_confirm(self):
+        return self.driver.find_element(By.XPATH, self.confirm)
+
+    # Login
+
+    def get_user(self):
+        return self.driver.find_element(By.ID, self.user)
+
+    def get_password(self):
+        return self.driver.find_element(By.ID, self.password)
+
+    def get_btn_ingresar(self):
+        return self.driver.find_element(By.ID, self.btn_ingresar)
+
+    # Section RecibosDeSueldo
+    def get_rec_section(self):
+        return self.driver.find_element(By.XPATH, self.section)
+
     # -- Actions --
 
     def upload_files(self):
         def return_result():
             return new_name_file
+
         def check_upload_files(array):
             table_files = self.get_files_table()
             for table_file in table_files:
@@ -108,7 +153,6 @@ class RecibosDeSueldo:
             assert True
         else:
             assert False
-
 
     def sign_file(self):
 
@@ -173,3 +217,14 @@ class RecibosDeSueldo:
             assert True
         else:
             assert True
+
+    def access_employ(self):
+        self.get_btn_exit().click()
+        self.get_confirm().click()
+        time.sleep(5)
+        self.get_user().send_keys(USER_EMPLOY)
+        self.get_password().send_keys(PASSWORD_EMPLOY)
+        self.get_btn_ingresar().click()
+        time.sleep(3)
+        self.get_rec_section().click()
+    

@@ -3,8 +3,8 @@ import os, shutil
 import time
 import random
 from selenium.common.exceptions import NoSuchElementException
-from os.path import join, dirname
 from dotenv import load_dotenv
+from os.path import join, dirname
 
 dotenv_path = join(dirname(__file__), 'C:/Users/Maynar/Desktop/LegajoDigital/.env')
 load_dotenv(dotenv_path)
@@ -16,9 +16,10 @@ PASSWORD_EMPLOY = os.getenv('PASSWORD_EMPLOY')
 for file in os.listdir('C:/Users/Maynar/Desktop/LegajoDigital/docExample'):
     if file.endswith(".pdf"):
         file_name = file
-        path_file_name = os.path.join('C:/Users/Maynar/Desktop/docExample', file)
+        path_file_name = os.path.join('C:\\Users\\Maynar\\Desktop\\LegajoDigital\\docExample', file)
 
 random_names_files = ["Example1", "Example2", "Example3", "Example4", "Example5"]
+
 
 class Documentacion:
 
@@ -29,7 +30,7 @@ class Documentacion:
         self.documentacion = '/html/body/main/aside/section/nav/ul/li[7]/div/div/ul/li[2]/a'
         # Upload files
         self.inpt_file = '//*[@id="divRecuperarArchivos"]/div/input'
-        self.check_emp = 'checkbox'
+        self.check_emp = '//*[@id="tableBodyEmpleados"]/tr[3]/td/div'
         self.btn_save = 'firmar-y-guardar'
         self.msg_exitoso = '//*[@id="modal-procesar-respuesta"]/div[2]/div/div[1]/h4'
         # Delete Files
@@ -68,7 +69,7 @@ class Documentacion:
         return self.driver.find_element(By.XPATH, self.inpt_file)
 
     def get_check_emp(self):
-        return self.driver.find_elements(By.CLASS_NAME, self.check_emp)
+        return self.driver.find_elements(By.XPATH, self.check_emp)
 
     def get_emp_especifico(self):
         return self.driver.find_element(By.XPATH, self.emp_especifico)
@@ -146,6 +147,7 @@ class Documentacion:
 
     def upload_file(self):
         self.get_documentacion().click()
+
         def check_exito():
             try:
                 msg = self.get_msg_exitoso().text
@@ -169,18 +171,16 @@ class Documentacion:
         print("Los empleados iniciales son ", init_files)
 
         if file_name in init_files:
-            new_name_file = os.getcwd() + "/docExample/" + random.choice(random_names_files) + ".pdf"
+            new_name_file = os.getcwd() + '\\docExample\\' + random.choice(random_names_files) + ".pdf"
             os.rename(path_file_name, new_name_file)
-            self.get_inpt_file().send_keys(path_file_name)
+            self.get_inpt_files().send_keys(new_name_file)
             time.sleep(4)
             print('Encontrado!')
         else:
-            self.get_inpt_file().send_keys(path_file_name)
+            self.get_inpt_files().send_keys(path_file_name)
             time.sleep(4)
 
-        self.get_documentacion().click()
-
-        time.sleep(3)
+        time.sleep(2)
         print(self.get_check_emp())
         random_opt_sec = random.choice(self.get_check_emp())
         print(random_opt_sec)
@@ -189,7 +189,10 @@ class Documentacion:
         self.get_save_btn().click()
         time.sleep(5)
 
-        if check_exito() is True:
+        check_upload_files(final_files)
+        print("Los empleado finales son ", final_files)
+
+        if init_files != final_files:
             assert True
         else:
             assert False
@@ -240,6 +243,8 @@ class Documentacion:
             assert False
 
     def firmar_doc_subido(self):
+
+        self.get_documentacion().click()
         def check_exito():
             try:
                 msg = self.get_msg_exitoso().text
@@ -249,16 +254,31 @@ class Documentacion:
                 return False
             return True
 
-        self.get_documentacion().click()
+        def check_upload_files(array):
+            table_files = self.get_docs_table()
+            for table_file in table_files:
+                table_file_name = table_file.text
+                array.append(table_file_name)
 
-        self.get_inpt_files().send_keys(os.getcwd() + "/docExample/Example.pdf")
-        time.sleep(3)
-        print(self.get_check_emp())
-        # random_opt_sec = random.choice(self.get_check_emp())
-        # print(random_opt_sec.text)
+        init_files = []
+        final_files = []
+
+        time.sleep(2)
+        check_upload_files(init_files)
+        print("Los empleados iniciales son ", init_files)
+
+        if file_name in init_files:
+            new_name_file = os.getcwd() + '\\docExample\\' + random.choice(random_names_files) + ".pdf"
+            os.rename(path_file_name, new_name_file)
+            self.get_inpt_files().send_keys(new_name_file)
+            time.sleep(4)
+            print('Encontrado!')
+        else:
+            self.get_inpt_files().send_keys(path_file_name)
+            time.sleep(4)
+
         time.sleep(5)
         self.get_emp_especifico().click()  # Click a empleado especifico
-        # random_opt_sec.click()
         time.sleep(3)
         self.get_firma_req().click()
         time.sleep(2)
@@ -266,12 +286,12 @@ class Documentacion:
         self.get_save_btn().click()
         time.sleep(4)
 
-        check_exito()
+        check_upload_files(final_files)
+        print("Los empleado finales son ", final_files)
 
-        if check_exito() is True:
+        if init_files != final_files:
             assert True
         else:
-            print('Test Fallido.')
             assert False
 
     def check_download_file(self):
