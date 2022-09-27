@@ -1,6 +1,6 @@
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
-import os
+import os, shutil
 import time
 import random
 from os.path import join, dirname
@@ -41,7 +41,7 @@ class RecibosDeSueldo:
         self.icon_sign = '//td[6]/a/img'
         self.pass_cert = '//*[@id="passwordCertificado"]'
         self.btn_firmar = '//*[@id="modalPassCertificadoRaiz"]/div[2]/div/div[3]/button[2]'
-        self.status_table = '//*[@id="ListadoArchivos"]/tbody/tr/td[3]'
+        self.status_table = '//*[@id="ListadoArchivos"]/tbody/tr[1]/td[3]'
 
         # -- EMPLEADO --
         # LogOut
@@ -52,7 +52,11 @@ class RecibosDeSueldo:
         self.password = 'Password'
         self.btn_ingresar = 'btnIngresar'
         # Section
+        self.menu = '/html/body/main/aside/section/nav/ul/li[3]/div/label'
         self.section = '/html/body/main/aside/section/nav/ul/li[3]/div/div/ul/li[2]/a'
+        self.ver_y_firmar = '//*[@id="btnBorrar"]'
+        self.btn_firmar_conforme = '//*[@id="modalFirmaRecibo"]/div[2]/div/div[3]/button[2]'
+        self.btn_download = '//*[@id="11592"]/td[5]/a'
 
     # -- Get Elements --
 
@@ -94,7 +98,6 @@ class RecibosDeSueldo:
     def get_status_tables(self):
         return self.driver.find_elements(By.XPATH, self.status_table)
 
-
     # -- EMPLEADO --
     # Exit
     def get_btn_exit(self):
@@ -115,8 +118,21 @@ class RecibosDeSueldo:
         return self.driver.find_element(By.ID, self.btn_ingresar)
 
     # Section RecibosDeSueldo
+    def get_menu(self):
+        return self.driver.find_element(By.XPATH, self.menu)
+
     def get_rec_section(self):
         return self.driver.find_element(By.XPATH, self.section)
+
+    def get_ver_y_firmar(self):
+        return self.driver.find_element(By.XPATH, self.ver_y_firmar)
+
+    def get_firmar_conforme(self):
+        return self.driver.find_element(By.XPATH, self.btn_firmar_conforme)
+
+    def get_btn_download(self):
+        return self.driver.find_element(By.XPATH, self.btn_download)
+
 
     # -- Actions --
 
@@ -161,7 +177,7 @@ class RecibosDeSueldo:
         status_tables = self.get_status_tables()
         for status_table in status_tables:
             name_status_table = status_table.text
-        print(name_status_table)
+        # print(name_status_table)
 
         if name_status_table == "Firma pendiente":
             self.get_icon_sign_file().click()
@@ -218,6 +234,29 @@ class RecibosDeSueldo:
         else:
             assert True
 
+    # -- EMPLEADO --
+    # Firmar Empleado
+    def firm_employ(self):
+        path_file_name = os.getcwd() + '\\FirmaEmp\\123456789-22092022Recibo.pdf'
+        self.get_recibosdesueldo().click()
+        self.get_inpt_file().send_keys(path_file_name)
+        print(path_file_name)
+        time.sleep(2)
+        status_tables = self.get_status_tables()
+        for status_table in status_tables:
+            name_status_table = status_table.text
+        print(name_status_table)
+        if name_status_table == "Firma pendiente":
+            self.get_icon_sign_file().click()
+            time.sleep(2)
+            self.get_pass_cert().send_keys("admin")
+            self.get_btn_firmar().click()
+            time.sleep(5)
+        else:
+            print("ESTOY EN EL ELSE!")
+
+        time.sleep(5)
+
     def access_employ(self):
         self.get_btn_exit().click()
         self.get_confirm().click()
@@ -226,5 +265,36 @@ class RecibosDeSueldo:
         self.get_password().send_keys(PASSWORD_EMPLOY)
         self.get_btn_ingresar().click()
         time.sleep(3)
+        self.get_menu().click()
         self.get_rec_section().click()
-    
+
+    def ver_y_firma(self):
+        self.get_ver_y_firmar().click()
+        self.get_firmar_conforme().click()
+
+
+    def download_emp(self):
+        self.get_btn_download().click()
+        while not os.path.exists(r"C:\Users\Maynar\Desktop\Test-Files"):
+            time.sleep(2)
+
+            # Check file
+        if os.path.isfile(r"C:\Users\Maynar\Desktop\Test-Files\123456789-22092022Recibo.pdf"):
+            print("File download is completed")
+            assert True
+        else:
+            print("File download is not completed")
+            assert False
+
+        time.sleep(3)
+        # Delete content folder
+        folder = r"C:\Users\Maynar\Desktop\Test-Files"
+        for filename in os.listdir(folder):
+            file_path = os.path.join(folder, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print('Failed to delete %s. Reason: %s' % (file_path, e))
