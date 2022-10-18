@@ -19,7 +19,7 @@ class CertificadoFirma:
         self.inp_pass = 'Password'
         self.new_cert = '//*[@id="modalNuevoCertificadoRaiz"]/div[2]/div/div[3]/button[2]'
         # self.msg_true = '//*[@id="modal-procesar-respuesta"]/div[2]/div/div[2]/label'
-        self.msg_true = '//*[@id="modal-procesar-respuesta"]/div[2]/div/div[1]/h4'
+        self.msg_true = '//*[@id="modal-procesar-respuesta"]/div/div/div/label'
         # Baja
         self.btn_del = '//*[@id="ListadoCertificados"]/tbody/tr/td[6]/a/i'
         self.btn_confirm = '.modal-dialog:nth-child(2) .btn:nth-child(2)'
@@ -31,8 +31,12 @@ class CertificadoFirma:
         self.btn_entendido = '//*[@id="modal-procesar-respuesta"]/div[2]/div/div[3]/button'
         self.create_cert = '//*[@id="modalPassCertificadoRaiz"]/div[2]/div/div[3]/button[2]'
         self.emp_cert_firma = 'sorting_1'
-        # xpath=//a[contains(text(),'Certificados Firma')]
-        # //*[@id="modalPassCertificadoRaiz"]/div[2]/div/div[3]/button[2]
+        # Add cert raiz to employees
+        self.btn_add_cert = '//*[@id="CertificadosFirma"]/div[1]/button[1]'
+        self.btn_confirm_add = '//*[@id="modalNuevoCertificado"]/div[2]/div/div[3]/button[2]'
+        self.inpt_pass_add_cert = '//*[@id="PasswordRoot"]'
+        self.firmar_cert = '//*[@id="modalPassCertificadoRaiz"]/div[2]/div/div[3]/button[2]'
+
     # -- Get Elements --
     # Alta
     def get_cert_firma(self):
@@ -81,6 +85,21 @@ class CertificadoFirma:
     def get_emp_cert_firma(self):
         return self.driver.find_elements(By.CLASS_NAME, self.emp_cert_firma)
 
+
+    # Añadir certificado Raiz a empleados
+    def get_btn_add_cert(self):
+        return self.driver.find_element(By.XPATH, self.btn_add_cert)
+
+    def get_btn_confirm_add(self):
+        return self.driver.find_element(By.XPATH, self.btn_confirm_add)
+
+    def get_inpt_pass_add_cert(self):
+        return self.driver.find_element(By.XPATH, self.inpt_pass_add_cert)
+
+    def get_firmar_certificado(self):
+        return self.driver.find_element(By.XPATH, self.firmar_cert)
+
+
     # -- Actions --
 
     # TEST SUITE  - ABM CERT.FIRMA
@@ -91,7 +110,8 @@ class CertificadoFirma:
         def check_exito():
             try:
                 msg = self.get_msg_true().text
-                if msg == 'Operación Exitosa':
+                print(msg)
+                if msg == ' El proceso se realizó exitosamente! ':
                     print('Coincide --> Operacion Exitosa')
             except NoSuchElementException:
                 return False
@@ -104,7 +124,7 @@ class CertificadoFirma:
         self.get_inp_pass().send_keys(pass_random)
         self.get_new_cert().click()
         time.sleep(3)
-        # self.driver.execute_script(WebDriverWait(self.driver, 10).until(EC.text_to_be_present_in_element(self.get_msg_true(), "Operación Exitosa")))
+
         if check_exito() is True:
             assert True
         else:
@@ -175,10 +195,16 @@ class CertificadoFirma:
             assert False
 
 
+    def add_cert_to_employees(self):
+        self.get_cert_firma().click()
+        self.get_btn_add_cert().click()
+        time.sleep(3)
+        self.get_btn_confirm_add().click()
+        self.get_inpt_pass_add_cert().send_keys('admin')
+        self.get_firmar_certificado().click()
+        time.sleep(6)
 
-        # Capturar los td de la tabla
-        # para ello crear un array inicial y un array final
-        # comparar y en caso de que se elimine uno, assert.
+
 
 
 

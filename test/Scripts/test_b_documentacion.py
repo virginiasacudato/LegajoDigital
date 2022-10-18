@@ -5,28 +5,19 @@ import time
 
 class TestDocumentacion(WebDriverSetup):
 
-    def test_a_alt_doc(self):
-        driver = self.driver
-        doc = Documentacion(driver)
-        doc.upload_file()
-    def test_b_baja_doc(self):
-        driver = self.driver
-        doc = Documentacion(driver)
-        doc.del_file()
-
-    def test_c_firmar_doc_adm(self):
+    def test_a_firmar_doc_adm(self):
         driver = self.driver
         doc = Documentacion(driver)
         doc.firmar_doc_subido()
 
-    def test_d_firma_employ(self):
+    def test_b_firma_employ(self):
         driver = self.driver
         doc = Documentacion(driver)
         doc.access_employ()
         doc.firmar_doc_employ()
         time.sleep(3)
 
-    def test_e_download_fl_emp(self):
+    def test_c_download_fl_emp(self):
         driver = self.driver
         doc = Documentacion(driver)
         doc.access_employ()
@@ -36,3 +27,8 @@ class TestDocumentacion(WebDriverSetup):
         driver = self.driver
         doc = Documentacion(driver)
         doc.check_download_file()
+
+    def test_e_baja_doc(self):
+        driver = self.driver
+        doc = Documentacion(driver)
+        doc.del_file()

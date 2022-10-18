@@ -18,7 +18,10 @@ for file in os.listdir('C:/Users/Maynar/Desktop/LegajoDigital/docExample'):
         file_name = file
         path_file_name = os.path.join('C:\\Users\\Maynar\\Desktop\\LegajoDigital\\docExample', file)
 
-random_names_files = ["Example1", "Example2", "Example3", "Example4", "Example5"]
+
+
+
+# random_names_files = ["Example10", "Example12", "Example13", "Example14", "Example15"]
 
 
 class Documentacion:
@@ -40,7 +43,7 @@ class Documentacion:
         # Firmar File
         self.firma_req = '//*[@id="modalSeleccionarEmpleados"]/div[2]/div/div[2]/div[3]/label'
         self.pass_cert_raiz = 'PasswordCertificado'
-        self.emp_especifico = '//*[@id="tableBodyEmpleados"]/tr[6]/td/div/label'
+        self.emp_especifico = ".even:nth-child(8) label"
         # Dowload File
         self.btn_down_pdf = '//*[@id="ListadoArchivos_wrapper"]/div[1]/button[2]'
 
@@ -55,6 +58,7 @@ class Documentacion:
         # Documents
         self.mi_documents = '/html/body/main/aside/section/nav/ul/li[3]/div/label'
         self.docs = '/html/body/main/aside/section/nav/ul/li[3]/div/div/ul/li[1]/a'
+        self.name_doc = '//*[@id="tablaArchivo"]/tbody/tr[1]/td[1]'
         # Firmar Doc
         self.firmar_btn = '//*[@id="btnFirmarDocumentacion"]'
         self.firmar_conforme = '//*[@id="modalFirmaDocumentos"]/div[2]/div/div[3]/button[2]'
@@ -72,7 +76,7 @@ class Documentacion:
         return self.driver.find_elements(By.XPATH, self.check_emp)
 
     def get_emp_especifico(self):
-        return self.driver.find_element(By.XPATH, self.emp_especifico)
+        return self.driver.find_element(By.CSS_SELECTOR, self.emp_especifico)
 
     def get_save_btn(self):
         return self.driver.find_element(By.ID, self.btn_save)
@@ -143,68 +147,20 @@ class Documentacion:
     def get_dowload_file(self):
         return self.driver.find_element(By.XPATH, self.download_file)
 
+    def get_name_doc_file(self):
+        return self.driver.find_element(By.XPATH, self.name_doc)
+
     # -- Actions --
 
-    def upload_file(self):
-        self.get_documentacion().click()
-
-        def check_exito():
-            try:
-                msg = self.get_msg_exitoso().text
-                if msg == 'Operación Exitosa':
-                    print('Coincide --> Operacion Exitosa')
-            except NoSuchElementException:
-                return False
-            return True
-
-        def check_upload_files(array):
-            table_files = self.get_docs_table()
-            for table_file in table_files:
-                table_file_name = table_file.text
-                array.append(table_file_name)
-
-        init_files = []
-        final_files = []
-
-        time.sleep(2)
-        check_upload_files(init_files)
-        print("Los empleados iniciales son ", init_files)
-
-        if file_name in init_files:
-            new_name_file = os.getcwd() + '\\docExample\\' + random.choice(random_names_files) + ".pdf"
-            os.rename(path_file_name, new_name_file)
-            self.get_inpt_files().send_keys(new_name_file)
-            time.sleep(4)
-            print('Encontrado!')
-        else:
-            self.get_inpt_files().send_keys(path_file_name)
-            time.sleep(4)
-
-        time.sleep(2)
-        print(self.get_check_emp())
-        random_opt_sec = random.choice(self.get_check_emp())
-        print(random_opt_sec)
-        random_opt_sec.click()
-        time.sleep(3)
-        self.get_save_btn().click()
-        time.sleep(5)
-
-        check_upload_files(final_files)
-        print("Los empleado finales son ", final_files)
-
-        if init_files != final_files:
-            assert True
-        else:
-            assert False
 
     def firmar_doc_employ(self):
         self.get_firmar_btn().click()
         self.get_firmar_conforme().click()
         time.sleep(2)
         status_doc = self.get_status_table().text
-        print(status_doc)
+        #print(status_doc)
         if status_doc == "Firmado conforme por Empleado":
-            print("Firma realizada")
+            #print("Firma realizada")
             assert True
         else:
             assert False
@@ -220,7 +176,7 @@ class Documentacion:
             docu_emp = doc_emp.text
             init_doc_emp_table.append(docu_emp)
 
-        print("Los empleados inicialmente con documentacion:", init_doc_emp_table)
+        #print("Los empleados inicialmente con documentacion:", init_doc_emp_table)
 
         self.get_trash_icon().click()
         time.sleep(5)
@@ -233,26 +189,18 @@ class Documentacion:
             docu_final_emp = doc_final_emp.text
             final_doc_emp_table.append(docu_final_emp)
 
-        print("Los empleados finales luego de la eliminacion:", final_doc_emp_table)
+        #print("Los empleados finales luego de la eliminacion:", final_doc_emp_table)
 
         if init_doc_emp_table != final_doc_emp_table:
-            print("Hubo un elemento eliminado!!!")
+            #print("Hubo un elemento eliminado!!!")
             assert True
         else:
-            print("Algo fallo")
+            #print("Algo fallo")
             assert False
 
     def firmar_doc_subido(self):
-
+        random_names_files = random.randint(1, 200)
         self.get_documentacion().click()
-        def check_exito():
-            try:
-                msg = self.get_msg_exitoso().text
-                if msg == 'Operación Exitosa':
-                    print('Coincide --> Operacion Exitosa')
-            except NoSuchElementException:
-                return False
-            return True
 
         def check_upload_files(array):
             table_files = self.get_docs_table()
@@ -265,16 +213,20 @@ class Documentacion:
 
         time.sleep(2)
         check_upload_files(init_files)
-        print("Los empleados iniciales son ", init_files)
+        #print("Los empleados iniciales son ", init_files)
 
         if file_name in init_files:
-            new_name_file = os.getcwd() + '\\docExample\\' + random.choice(random_names_files) + ".pdf"
+            new_name_file = os.getcwd() + '\\docExample\\' + "Example" + str(random_names_files) + ".pdf"
             os.rename(path_file_name, new_name_file)
+            time.sleep(6)
             self.get_inpt_files().send_keys(new_name_file)
             time.sleep(4)
-            print('Encontrado!')
+            #print('Encontrado!')
         else:
-            self.get_inpt_files().send_keys(path_file_name)
+            new_name_file = os.getcwd() + '\\docExample\\' + "Example" + str(random_names_files) + ".pdf"
+            os.rename(path_file_name, new_name_file)
+            time.sleep(10)
+            self.get_inpt_files().send_keys(new_name_file)
             time.sleep(4)
 
         time.sleep(5)
@@ -287,7 +239,7 @@ class Documentacion:
         time.sleep(4)
 
         check_upload_files(final_files)
-        print("Los empleado finales son ", final_files)
+        #print("Los empleado finales son ", final_files)
 
         if init_files != final_files:
             assert True
@@ -305,10 +257,10 @@ class Documentacion:
 
         # Check file
         if os.path.isfile(r"C:\Users\Maynar\Desktop\Test-Files\Documentación.pdf"):
-            print("File download is completed")
+            #print("File download is completed")
             assert True
         else:
-            print("File download is not completed")
+            #print("File download is not completed")
             assert False
 
         time.sleep(3)
@@ -326,17 +278,20 @@ class Documentacion:
 
     def download_fl_emp(self):
         self.get_dowload_file().click()
+        get_name_doc = self.get_name_doc_file().text
+        print(get_name_doc)
         time.sleep(4)
 
         while not os.path.exists(r"C:\Users\Maynar\Desktop\Test-Files"):
             time.sleep(2)
 
+        path_is_file = r'C:\\Users\\Maynar\\Desktop\\Test-Files\\' + get_name_doc
         # Check file
-        if os.path.isfile(r"C:\Users\Maynar\Desktop\Test-Files\Example.pdf"):
-            print("File download is completed")
+        if os.path.isfile(path_is_file):
+            #print("File download is completed")
             assert True
         else:
-            print("File download is not completed")
+            #print("File download is not completed")
             assert False
 
         time.sleep(3)

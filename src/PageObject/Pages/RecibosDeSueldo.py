@@ -1,6 +1,7 @@
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 import os, shutil
+import datetime
 import time
 import random
 from os.path import join, dirname
@@ -53,10 +54,12 @@ class RecibosDeSueldo:
         self.btn_ingresar = 'btnIngresar'
         # Section
         self.menu = '/html/body/main/aside/section/nav/ul/li[3]/div/label'
+        self.rec_sueldo_emp = '/html/body/main/aside/section/nav/ul/li[3]/div/div/ul/li[2]/a'
         self.section = '/html/body/main/aside/section/nav/ul/li[3]/div/div/ul/li[2]/a'
         self.ver_y_firmar = '//*[@id="btnBorrar"]'
         self.btn_firmar_conforme = '//*[@id="modalFirmaRecibo"]/div[2]/div/div[3]/button[2]'
         self.btn_download = '//*[@id="11592"]/td[5]/a'
+        self.status_rec_emp = '.td:nth-child(2)'
 
     # -- Get Elements --
 
@@ -121,6 +124,9 @@ class RecibosDeSueldo:
     def get_menu(self):
         return self.driver.find_element(By.XPATH, self.menu)
 
+    def geT_rec_sueldo_emp(self):
+        return self.driver.find_element(By.XPATH, self.rec_sueldo_emp)
+
     def get_rec_section(self):
         return self.driver.find_element(By.XPATH, self.section)
 
@@ -133,13 +139,22 @@ class RecibosDeSueldo:
     def get_btn_download(self):
         return self.driver.find_element(By.XPATH, self.btn_download)
 
+    def get_status_rec_emp(self):
+        return self.driver.find_element(By.CSS_SELECTOR, self.status_rec_emp)
+
 
     # -- Actions --
 
     def upload_files(self):
-        def return_result():
-            return new_name_file
-
+        # Formatear archivo con la fecha actual
+        date_now = datetime.date.today()
+        ref_date = date_now.strftime("%d-%m-%Y")
+        #print(ref_date)
+        reformat_date = str(ref_date).replace('-', '')
+        new_name_file_date = os.getcwd() + "/123456789-"+ reformat_date + "Recibo.pdf"
+        #print(new_name_file_date)
+        os.rename(path_file_name, new_name_file_date)
+        time.sleep(10)
         def check_upload_files(array):
             table_files = self.get_files_table()
             for table_file in table_files:
@@ -152,19 +167,19 @@ class RecibosDeSueldo:
         self.get_recibosdesueldo().click()
         time.sleep(4)
         check_upload_files(init_files)
-        print("Los empleados iniciales son ", init_files)
+        #print("Los empleados iniciales son ", init_files)
         if file_name in init_files:
             new_name_file = os.getcwd() + "/" + random.choice(employees_dni) + "-22092022Recibo.pdf"
             os.rename(path_file_name, new_name_file)
             self.get_inpt_file().send_keys(path_file_name)
             time.sleep(4)
-            print('Encontrado!')
+            #print('Encontrado!')
         else:
-            self.get_inpt_file().send_keys(path_file_name)
+            self.get_inpt_file().send_keys(new_name_file_date)
             time.sleep(4)
 
         check_upload_files(final_files)
-        print("Los empleado finales son ", final_files)
+        #print("Los empleado finales son ", final_files)
         if init_files != final_files:
             assert True
         else:
@@ -176,10 +191,10 @@ class RecibosDeSueldo:
         time.sleep(2)
         status_tables = self.get_status_tables()
         for status_table in status_tables:
-            name_status_table = status_table.text
+            status_table_adm = status_table.text
         # print(name_status_table)
 
-        if name_status_table == "Firma pendiente":
+        if status_table_adm == "Firma pendiente":
             self.get_icon_sign_file().click()
             time.sleep(2)
             self.get_pass_cert().send_keys("admin")
@@ -200,11 +215,11 @@ class RecibosDeSueldo:
         def check_table_empty():
             try:
                 without_data = self.get_table_empty().text
-                print(without_data)
+                #print(without_data)
                 if without_data == 'No hay datos para mostrar':
                     print("NO HAY DATOS!")
             except NoSuchElementException:
-                print("Soy false, estoy en el else")
+                #print("Soy false, estoy en el else")
                 return False
             return True
 
@@ -215,7 +230,7 @@ class RecibosDeSueldo:
             self.get_trash_icon().click()
             time.sleep(4)
             self.get_btn_confirm().click()
-            print("file_send es true!!!")
+            #print("file_send es true!!!")
             time.sleep(4)
         else:
             self.get_trash_icon().click()
@@ -224,12 +239,12 @@ class RecibosDeSueldo:
             time.sleep(5)
             file_send = False
             assert True
-            print("sali por el else, soy false!!!")
+            #print("sali por el else, soy false!!!")
 
         if file_send is True:
             os.rename(path_file_name, new_name_file)
-            print("El nombre del archivo viejo es ", path_file_name)
-            print("El nombre del archivo nuevo es ", new_name_file)
+            #print("El nombre del archivo viejo es ", path_file_name)
+            #print("El nombre del archivo nuevo es ", new_name_file)
             assert True
         else:
             assert True
@@ -237,23 +252,21 @@ class RecibosDeSueldo:
     # -- EMPLEADO --
     # Firmar Empleado
     def firm_employ(self):
-        path_file_name = os.getcwd() + '\\FirmaEmp\\123456789-22092022Recibo.pdf'
-        self.get_recibosdesueldo().click()
-        self.get_inpt_file().send_keys(path_file_name)
-        print(path_file_name)
-        time.sleep(2)
-        status_tables = self.get_status_tables()
-        for status_table in status_tables:
-            name_status_table = status_table.text
-        print(name_status_table)
-        if name_status_table == "Firma pendiente":
+
+        self.geT_rec_sueldo_emp().click()
+
+        #print(path_file_name)
+        status_tables_emp = self.get_status_rec_emp().text
+        print(status_tables_emp)
+        if status_tables_emp == "Firmado por Usuario":
+            print("Estoy en el if")
             self.get_icon_sign_file().click()
             time.sleep(2)
-            self.get_pass_cert().send_keys("admin")
-            self.get_btn_firmar().click()
+            self.get_ver_y_firmar().click()
+            self.get_firmar_conforme().click()
             time.sleep(5)
         else:
-            print("ESTOY EN EL ELSE!")
+            print("El archivo está firmado!")
 
         time.sleep(5)
 
@@ -267,11 +280,6 @@ class RecibosDeSueldo:
         time.sleep(3)
         self.get_menu().click()
         self.get_rec_section().click()
-
-    def ver_y_firma(self):
-        self.get_ver_y_firmar().click()
-        self.get_firmar_conforme().click()
-
 
     def download_emp(self):
         self.get_btn_download().click()
