@@ -28,7 +28,7 @@ class WebDriverSetup(unittest.TestCase):
         self.driver.get(BASE_URL)
         # Login
         self.driver.find_element(By.ID, 'Usuario').send_keys(USER)
-        self.driver.find_element(By.ID, 'Password').send_keys(PASSWORD)
+        self.driver.find_element(By.ID, 'password').send_keys(PASSWORD)
         self.driver.find_element(By.ID, 'btnIngresar').click()
         # Acceso a Legajo Digital
         self.driver.find_element(By.XPATH, '/html/body/main/aside/section/nav/ul/li[7]/div/label').click()

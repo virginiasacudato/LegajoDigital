@@ -7,17 +7,17 @@ import random
 from os.path import join, dirname
 from dotenv import load_dotenv
 
-dotenv_path = join(dirname(__file__), 'C:/Users/Maynar/Desktop/LegajoDigital/.env')
+dotenv_path = join(dirname(__file__), '/.env')
 load_dotenv(dotenv_path)
 
 # Environment Variables
 USER_EMPLOY = os.getenv('USER_EMPLOY')
 PASSWORD_EMPLOY = os.getenv('PASSWORD_EMPLOY')
 
-for file in os.listdir('C:/Users/Maynar/Desktop/LegajoDigital'):
+for file in os.listdir('/'):
     if file.endswith(".pdf"):
         file_name = file
-        path_file_name = os.path.join('C:/Users/Maynar/Desktop/LegajoDigital', file)
+        path_file_name = os.path.join('/', file)
 
 file_send = bool
 employees_dni = ["45615684", "1648564968", "46461316", "54545615"]

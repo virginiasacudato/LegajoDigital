@@ -1,5 +1,5 @@
 from src.TestBase.WebDriverSetup import WebDriverSetup
-from src.PageObject.Pages.RecibosDeSueldo import RecibosDeSueldo
+from src.PageObject.Pages.Elements.RecibosDeSueldo import RecibosDeSueldo
 
 
 class TestReciboDeSueldo(WebDriverSetup):
